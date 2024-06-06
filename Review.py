@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import nltk
-import nltk
+#import nltk
 nltk.download('wordnet')
 
 import re
@@ -70,7 +70,7 @@ df['label']=np.where(df['value']>=4,1,0) #1-Positve,0-Negative
 
 print(df.head())
 
-print(df['value'].value_counts())
+print(df['value'].value_counts())  #Will count the unique values
 
 
 
@@ -78,8 +78,8 @@ import pandas as pd
 
 df = df.sample(frac=1).reset_index(drop=True)  # shuffle
 
-data_label_0 = df[df['label'] == 0].iloc[:100]
-data_label_1 = df[df['label'] == 1].iloc[:100]
+data_label_0 = df[df['label'] == 0].iloc[:400]
+data_label_1 = df[df['label'] == 1].iloc[:400]
 
 data = pd.concat([data_label_0, data_label_1], ignore_index=True)
 data = data.sample(frac=1).reset_index(drop=True)  # shuffle again
@@ -143,13 +143,33 @@ tf_x_test = vectorizer.transform(X_test)
 from sklearn.svm import LinearSVC
 clf = LinearSVC(random_state=0)
 clf.fit(tf_x_train,Y_train)
+##print(tf_x_test)
 y_test_pred=clf.predict(tf_x_test)
 
-print(y_test_pred)
+#print(y_test_pred)
+
+
 
 from sklearn.metrics import classification_report
 report=classification_report(Y_test, y_test_pred,output_dict=True)
 print(report)
+
+#####################################################################ACCURACY EXTRACTION###################################################################################################
+from sklearn.metrics import classification_report
+
+
+
+# Function to parse the classification report dictionary and extract accuracy
+def extract_accuracy(classification_report_dict):
+    accuracy = classification_report_dict['accuracy']
+    return accuracy
+
+# Convert the report dictionary to a string
+report_str = classification_report(Y_test, y_test_pred,output_dict=True)
+
+# Extract accuracy from the report
+accuracy = extract_accuracy(report)
+print("Accuracy:", accuracy)
 
 
 
@@ -167,14 +187,43 @@ clf = LogisticRegression(max_iter=1000,solver='saga')
 
 clf.fit(tf_x_train,Y_train)
 y_test_pred=clf.predict(tf_x_test)
+#print(y_test_pred)
 
 from sklearn.metrics import classification_report
-report=classification_report(Y_test, y_test_pred,output_dict=True)
-print(report)
+report1=classification_report(Y_test, y_test_pred,output_dict=True)
+print(report1)
+###################################################################################ACCURACY EXTRACTION################################################################################
+from sklearn.metrics import classification_report
+
+
+
+# Function to parse the classification report dictionary and extract accuracy
+def extract_accuracy(classification_report_dict):
+    accuracy = classification_report_dict['accuracy']
+    return accuracy
+
+# Convert the report dictionary to a string
+report_str = classification_report(Y_test, y_test_pred,output_dict=True)
+
+# Extract accuracy from the report
+accuracy1 = extract_accuracy(report1)
+print("Accuracy:", accuracy1)
+##################################################################################ALGORITHM GRAPH#######################################################################################
+
+algorithm_names = ['SVM', 'Logistic Regression']  # Replace with your algorithm names
+accuracies = [accuracy,accuracy1]  # Replace with your algorithm accuracies
+import matplotlib.pyplot as plt
+plt.bar(algorithm_names, accuracies)
+plt.xlabel('Algorithms')
+plt.ylabel('Accuracy')
+plt.title('Accuracy of Algorithms')
+plt.show()
+
+
 
 ######################################################################################DATABASE PART######################################################################################
 new_data=data[['productId','label']]
-print(new_data)
+#print(new_data)
 import pandas as pd
 
 
@@ -182,9 +231,9 @@ df = pd.DataFrame(new_data)
 filtered_df = df[df['label'] == 1]
 counts = filtered_df['productId'].value_counts()
 result = counts[counts > 5]
-print(result.index.tolist())
+#print(result.index.tolist())
 Final_Result=result.index.tolist()
-print(Final_Result)
+#print(Final_Result)
 
 
 
